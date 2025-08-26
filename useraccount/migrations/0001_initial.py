@@ -60,7 +60,7 @@ class Migration(migrations.Migration):
                 ('dob', models.DateField(blank=True, null=True)),
                 ('mobile', models.CharField(blank=True, max_length=20, null=True)),
                 ('language', models.CharField(blank=True, max_length=50, null=True)),
-                ('address', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to='account.address')),
+                ('address', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to='useraccount.address')),
                 ('user', models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
             ],
         ),
