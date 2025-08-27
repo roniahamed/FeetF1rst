@@ -1,5 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager
+import random, string, datetime 
+from django.utils import timezone 
+from django.conf import settings 
 
 # Create your models here.
 
@@ -17,6 +20,7 @@ class UserManager(BaseUserManager):
     def create_superuser(self, email, full_name, dob, password=None, **extra_fields):
         extra_fields.setdefault('role', 'admin')
         extra_fields.setdefault('is_staff', True)
+        extra_fields.setdefault('is_active', True)
         extra_fields.setdefault('is_superuser', True)
         return self.create_user(email, full_name, dob, password, **extra_fields)
 
@@ -35,6 +39,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
     date_joined = models.DateTimeField(auto_now_add=True)
+    is_verified = models.BooleanField(default=False)
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['full_name', 'dob']
@@ -43,6 +48,31 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return self.email
+
+class OTP(models.Model):
+    PURPOSE_CHOICES = (
+        ("email_verification", "Email Verification"),
+        ("login", "Login"),
+        ("password_reset", "Password Reset"),
+    )
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    code = models.CharField(max_length=6)
+    purpose = models.CharField(max_length=20, choices=PURPOSE_CHOICES)
+    created_at = models.DateTimeField(auto_now_add=True)
+    is_used = models.BooleanField(default=False)
+    resend_count = models.IntegerField(default=0)
+    resend_cooldown = models.IntegerField(default=2)  # in minutes
+
+    def is_expired(self):
+        return timezone.now() > self.created_at + datetime.timedelta(minutes=2)
+    
+    @staticmethod
+    def generate_otp_code(length=6):
+        return ''.join(random.choices(string.digits, k=length))
+    
+    def __str__(self):
+        return f"OTP for {self.user.email} - {self.purpose}"
 
 
 class Profile(models.Model):

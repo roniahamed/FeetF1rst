@@ -50,5 +50,6 @@ class CustomRegisterSerializer(RegisterSerializer):
         user = super().save(request)
         user.full_name = self.cleaned_data.get('full_name')
         user.dob = self.cleaned_data.get('dob')
+        user.is_active = False  # User must activate via email
         user.save()
         return user

@@ -3,11 +3,11 @@ from django.contrib import admin
 # Register your models here.
 from django.contrib import admin
 from unfold.admin import ModelAdmin, StackedInline
-from .models import User, Profile, ProfileOnboard, Address
+from .models import User, Profile, ProfileOnboard, Address, OTP
 
 @admin.register(User)
 class UserAdmin(ModelAdmin):
-    list_display = ('email', 'full_name', 'role', 'is_active', 'is_staff', 'date_joined', 'dob', 'password')
+    list_display = ('id','email', 'full_name', 'role','is_verified', 'is_active', 'is_staff', 'date_joined', 'dob', 'password')
     search_fields = ('email', 'full_name')
     list_filter = ('role', 'is_active', 'is_staff')
     ordering = ('-date_joined',)
@@ -28,3 +28,11 @@ class AddressAdmin(ModelAdmin):
     list_display = ('user', 'first_name', 'last_name', 'city', 'country', 'updated_at')
     search_fields = ('user__email', 'first_name', 'last_name', 'city')
     list_filter = ('country',)
+
+
+@admin.register(OTP)
+class OTPAdmin(ModelAdmin):
+    list_display = ('user', 'code', 'purpose', 'created_at', 'is_used')
+    search_fields = ('user__email', 'code', 'purpose')
+    list_filter = ('purpose', 'is_used', 'created_at')
+    ordering = ('-created_at',)
