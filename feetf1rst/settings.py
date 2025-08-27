@@ -14,6 +14,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 from pathlib import Path
 from decouple import config
 from datetime import timedelta
+from allauth.account import app_settings as allauth_account_settings
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -158,10 +159,15 @@ REST_FRAMEWORK = {
     ),
 }
 
+REST_USE_JWT = True
+JWT_AUTH_COOKIE = None 
 
 REST_AUTH = {
     'USE_JWT':True,
     'REGISTER_SERIALIZER': 'useraccount.serializers.CustomRegisterSerializer',
+    'JWT_AUTH_COOKIE': 'feetf1rst-access',
+    'JWT_AUTH_REFRESH_COOKIE': 'feetf1rst-refresh',
+
     
 }
 
@@ -180,9 +186,23 @@ REST_AUTH_SERIALIZERS = {
     'USER_DETAILS_SERIALIZER': 'useraccount.serializers.CustomUserDetailsSerializer',
 }
 
+# Allauth settings
+SIGNUP_FIELDS = allauth_account_settings.SIGNUP_FIELDS
+SIGNUP_FIELDS['email']['required'] = True
+
 ACCOUNT_EMAIL_VERIFICATION = 'none'  # or 'mandatory' if you want email verification
 ACCOUNT_UNIQUE_EMAIL = True
 
 ACCOUNT_USER_MODEL_USERNAME_FIELD = None
 ACCOUNT_LOGIN_METHODS ={'email'}
 ACCOUNT_SIGNUP_FIELDS = ['email*', 'password1*',  'full_name*', 'dob']
+
+
+# Email backend configuration
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = config('EMAIL_HOST', default='smtp.gmail.com')
+EMAIL_PORT = config('EMAIL_PORT', default=587, cast=int)
+EMAIL_USE_TLS = config('EMAIL_USE_TLS', default=True, cast=bool)
+EMAIL_HOST_USER = config('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
+DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL', default=EMAIL_HOST_USER)

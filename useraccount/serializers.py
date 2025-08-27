@@ -4,6 +4,7 @@ from dj_rest_auth.registration.serializers import RegisterSerializer
 from rest_framework import serializers
 from .models import User, Profile, ProfileOnboard, Address
 from rest_framework.validators import UniqueValidator
+from allauth.account import app_settings as allauth_account_settings 
 
 
 class ProfileSerializer(serializers.ModelSerializer):
@@ -20,7 +21,7 @@ class CustomUserDetailsSerializer(UserDetailsSerializer):
 
 class CustomRegisterSerializer(RegisterSerializer):
     username = None  # Remove username field
-    email = serializers.EmailField(required=True, validators=[UniqueValidator(queryset=User.objects.all())])
+    email = serializers.EmailField(required=allauth_account_settings.EMAIL_REQUIRED, validators=[UniqueValidator(queryset=User.objects.all())])
     full_name = serializers.CharField(max_length=255)
     dob = serializers.DateField()
 
