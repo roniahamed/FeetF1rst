@@ -7,14 +7,14 @@ from .models import User, Profile, ProfileOnboard, Address
 
 @admin.register(User)
 class UserAdmin(ModelAdmin):
-    list_display = ('email', 'full_name', 'role', 'is_active', 'is_staff', 'date_joined')
+    list_display = ('email', 'full_name', 'role', 'is_active', 'is_staff', 'date_joined', 'dob', 'password')
     search_fields = ('email', 'full_name')
     list_filter = ('role', 'is_active', 'is_staff')
     ordering = ('-date_joined',)
 
 @admin.register(Profile)
 class ProfileAdmin(ModelAdmin):
-    list_display = ('user', 'gender', 'mobile', 'language')
+    list_display = ('user', 'gender', 'mobile', 'language', 'dob')
     search_fields = ('user__email', 'mobile')
     list_filter = ('gender',)
 

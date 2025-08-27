@@ -62,6 +62,8 @@ INSTALLED_APPS = [
 
 AUTH_USER_MODEL = 'useraccount.User'
 
+SITE_ID = 1
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -149,10 +151,18 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
+}
+
+
+REST_AUTH = {
+    'USE_JWT':True,
+    'REGISTER_SERIALIZER': 'useraccount.serializers.CustomRegisterSerializer',
+    
 }
 
 # SimpleJWT settings (optional, for customization)
@@ -170,12 +180,9 @@ REST_AUTH_SERIALIZERS = {
     'USER_DETAILS_SERIALIZER': 'useraccount.serializers.CustomUserDetailsSerializer',
 }
 
-REST_AUTH_REGISTER_SERIALIZERS = {
-    'REGISTER_SERIALIZER': 'useraccount.serializers.CustomRegisterSerializer',
-}
-
-ACCOUNT_EMAIL_VERIFICATION = 'optional'  # or 'mandatory' if you want email verification
+ACCOUNT_EMAIL_VERIFICATION = 'none'  # or 'mandatory' if you want email verification
+ACCOUNT_UNIQUE_EMAIL = True
 
 ACCOUNT_USER_MODEL_USERNAME_FIELD = None
 ACCOUNT_LOGIN_METHODS ={'email'}
-ACCOUNT_SIGNUP_FIELDS = ['email*', 'password1*']
+ACCOUNT_SIGNUP_FIELDS = ['email*', 'password1*',  'full_name*', 'dob']
