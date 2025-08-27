@@ -76,6 +76,10 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+# allauth settings
+ACCOUNT_ADAPTER = 'useraccount.adapters.CustomAccountAdapter'
+
+
 ROOT_URLCONF = 'feetf1rst.urls'
 
 TEMPLATES = [
@@ -152,6 +156,11 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+AUTHENTICATION_BACKENDS = [
+    "useraccount.auth_backends.EmailBackend",  # custom backend
+    "django.contrib.auth.backends.ModelBackend",  # fallback
+]
+
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
@@ -190,8 +199,7 @@ REST_AUTH_SERIALIZERS = {
 SIGNUP_FIELDS = allauth_account_settings.SIGNUP_FIELDS
 SIGNUP_FIELDS['email']['required'] = True
 
-ACCOUNT_EMAIL_VERIFICATION = 'none'  # or 'mandatory' if you want email verification
-ACCOUNT_UNIQUE_EMAIL = True
+ACCOUNT_EMAIL_VERIFICATION = 'none'  
 
 ACCOUNT_USER_MODEL_USERNAME_FIELD = None
 ACCOUNT_LOGIN_METHODS ={'email'}
