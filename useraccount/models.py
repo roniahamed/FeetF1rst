@@ -84,7 +84,6 @@ class Profile(models.Model):
     image = models.ImageField(upload_to='profiles/', blank=True, null=True)
     gender = models.CharField(
         max_length=10, choices=GENDER_CHOICES, blank=True, null=True)
-    dob = models.DateField(blank=True, null=True)
     mobile = models.CharField(max_length=20, blank=True, null=True)
     language = models.CharField(max_length=50, blank=True, null=True)
     address = models.ForeignKey(

@@ -44,7 +44,7 @@ class VerifyEmailOTPView(APIView):
         subject = 'Email Verified Successfully!'
         html_template = render_to_string('email/email_verification_successful.html', {'user': user,'full_name': user.full_name})
 
-        send_verification_email(subject = subject, user = user ,html_template = html_template )
+        send_verification_email(subject = subject, email = user.email ,html_template = html_template )
         return Response({"message": "Email verified successfully."}, status=status.HTTP_200_OK)
     
 class EmailVerifyResetOtp(APIView):
@@ -72,7 +72,7 @@ class EmailVerifyResetOtp(APIView):
         subject = 'FeetF1rst OTP Verification'
         html_template = render_to_string('email/email_verification.html', {'user': user, 'otp': otp, 'full_name': user.full_name})
 
-        send_verification_email(subject = subject, user = user, html_template = html_template )
+        send_verification_email(subject = subject, email = user.email, html_template = html_template )
 
         return Response({"message": "OTP resent successfully."}, status=status.HTTP_200_OK)
 

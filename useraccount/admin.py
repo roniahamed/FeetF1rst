@@ -14,7 +14,7 @@ class UserAdmin(ModelAdmin):
 
 @admin.register(Profile)
 class ProfileAdmin(ModelAdmin):
-    list_display = ('user', 'gender', 'mobile', 'language', 'dob')
+    list_display = ('user', 'gender', 'mobile', 'language')
     search_fields = ('user__email', 'mobile')
     list_filter = ('gender',)
 
