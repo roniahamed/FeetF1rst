@@ -8,7 +8,7 @@ from django.conf import settings
 from django.core.mail import send_mail
 import random
 from django.template.loader import render_to_string 
-from utils.email import send_verification_email
+from useraccount.utils.email import send_verification_email
 from django.db.models import Q
 
 class VerifyEmailOTPView(APIView):
@@ -16,6 +16,11 @@ class VerifyEmailOTPView(APIView):
         email = request.data.get('email')
         otp_code = request.data.get('otp')
         user = None
+
+        if not email:
+            return Response({'error': 'Email is required'})
+        if not otp_code:
+            return Response({'error': 'OTP is required'})
 
         try:
             user = User.objects.get(email=email)
@@ -33,7 +38,13 @@ class VerifyEmailOTPView(APIView):
         otp.save()
         otp.delete()
         user.is_verified = True
+        user.is_active = True
         user.save()
+        
+        subject = 'FeetF1rst OTP Verification'
+        html_template = render_to_string('email/email_verification.html', {'user': user, 'otp': otp, 'full_name': user.full_name})
+
+        send_verification_email(subject = subject, user = user , email = email, otp = otp, html_template = html_template )
         return Response({"message": "Email verified successfully."}, status=status.HTTP_200_OK)
     
 class EmailVerifyResetOtp(APIView):
@@ -46,7 +57,7 @@ class EmailVerifyResetOtp(APIView):
             return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
 
         if user.is_verified:
-            return Response({"error": "Invalid or expired OTP"}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"error": "User already verified."}, status=status.HTTP_400_BAD_REQUEST)
         
         active_otp = OTP.objects.filter( Q(user__email=email) | Q(purpose='email_verification') | Q (is_used=False)).order_by('created_at').last()
 
@@ -59,9 +70,9 @@ class EmailVerifyResetOtp(APIView):
 
         OTP.objects.create(code = otp, user = user, purpose = 'email_verification')
         subject = 'FeetF1rst OTP Verification'
-        html_message = render_to_string('email/email_verification.html', {'user': user, 'otp': otp, 'full_name': user.full_name})
+        html_template = render_to_string('email/email_verification.html', {'user': user, 'otp': otp, 'full_name': user.full_name})
 
-        send_verification_email(subject = subject, user = user , email = email, otp = otp, html_message = html_message )
+        send_verification_email(subject = subject, user = user , email = email, otp = otp, html_template = html_template )
 
         return Response({"message": "OTP resent successfully."}, status=status.HTTP_200_OK)
 
