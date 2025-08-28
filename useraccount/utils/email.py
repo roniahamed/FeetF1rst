@@ -13,9 +13,12 @@ def send_welcome_email(user):
 
     send_mail(subject, plain_message, from_email, [to], html_message=html_message)
 
-def sent_otp_email(subject, email, user, otp, html_template):
-    subject = 'FeetF1rst OTP Verification'
-    html_message = render_to_string(html_template, {'user': user, 'otp': otp})
+def send_verification_email(subject, email, user, otp, html_template, **kwargs):
+    html_message = render_to_string(html_template, {'user': user, 'otp': otp, 'full_name': user.full_name})
     from_email = settings.DEFAULT_FROM_EMAIL
+    from_email = settings.DEFAULT_FROM_EMAIL
+    if not from_email:
+        raise ValueError("DEFAULT_FROM_EMAIL is not set in settings.py")
     to = email
-    send_mail(subject, from_email, [to], html_message=html_message)
+    recipient_list = [email]
+    send_mail(subject,'', from_email, recipient_list, html_message=html_message, fail_silently=False)

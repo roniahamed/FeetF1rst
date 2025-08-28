@@ -62,7 +62,6 @@ class OTP(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     is_used = models.BooleanField(default=False)
     resend_count = models.IntegerField(default=0)
-    resend_cooldown = models.IntegerField(default=2)  # in minutes
 
     def is_expired(self):
         return timezone.now() > self.created_at + datetime.timedelta(minutes=2)
