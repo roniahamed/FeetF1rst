@@ -4,7 +4,7 @@ from django.template.loader import render_to_string
 from django.utils.html import strip_tags
 
 
-def send_welcome_email(user):
+def send_welcome_email(user, *args, **kwargs):
     subject = 'Welcome to Our Service!'
     html_message = render_to_string('welcome_email.html', {'user': user})
     plain_message = strip_tags(html_message)
@@ -13,7 +13,7 @@ def send_welcome_email(user):
 
     send_mail(subject, plain_message, from_email, [to], html_message=html_message)
 
-def send_verification_email(subject, email, user, otp, html_template, **kwargs):
+def send_verification_email(subject, email, html_template,*args, **kwargs):
     from_email = settings.DEFAULT_FROM_EMAIL
     if not from_email:
         raise ValueError("DEFAULT_FROM_EMAIL is not set in settings.py")
