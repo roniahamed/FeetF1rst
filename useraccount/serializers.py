@@ -48,8 +48,9 @@ class CustomRegisterSerializer(RegisterSerializer):
     
     def save(self, request):
         user = super().save(request)
-        user.full_name = self.cleaned_data.get('full_name')
-        user.dob = self.cleaned_data.get('dob')
+        for fields, vlaue in self.validated_data.items():
+            if hasattr(user, fields):
+                setattr(user, fields, vlaue)
         user.is_active = False  # User must activate via email
         user.save()
         return user
