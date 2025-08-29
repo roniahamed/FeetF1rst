@@ -77,4 +77,32 @@ class EmailVerifyResetOtp(APIView):
         return Response({"message": "OTP resent successfully."}, status=status.HTTP_200_OK)
 
         
+class SendPasswordResetOTPView(APIView):
+    def post(self, request):
+        email = request.data.get('email')
+
+        user = User.objects.filter(email = email, is_verified = True).first()
+
+        if not user:
+            return Response({'error':"User not found or not verified"}, status = status.HTTP_400_BAD_REQUEST)
+        
+        active_otp = OTP.objects.filter(Q(user__email = email) | Q(purpose = 'password_reset') | Q(is_used=False)).order_by('created_at').last()
+
+        if active_otp and not active_otp.is_expired():
+             return Response(
+            {"error": "Already sent OTP, please try using the existing one."},
+            status=status.HTTP_400_BAD_REQUEST
+        )
+        
+        otp = OTP.generate_otp_code()
+
+        OTP.objects.create(code=otp, user=user, purpose = 'password_reset')
+
+        subject = "FeetF1rst Password Reset OTP"
+        html_template = render_to_string('email/password_reset_otp.html', {'user':user, 'otp':otp, 'full_name':user.full_name})
+
+        send_verification_email(subject=subject, email=email, html_template= html_template)
+
+        return Response({"message": " Password Reset OTP successfully."}, status=status.HTTP_200_OK)
+
 
