@@ -9,6 +9,8 @@ from django.db.models import Q
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError
 
+
+# Verify otp for account by gmail
 class VerifyEmailOTPView(APIView):
     def post(self, request):
         email = request.data.get('email')
@@ -34,7 +36,6 @@ class VerifyEmailOTPView(APIView):
             return Response({"error": "Invalid or expired OTP."}, status=status.HTTP_400_BAD_REQUEST)
         otp.is_used = True
         otp.save()
-        otp.delete()
         user.is_verified = True
         user.is_active = True
         user.save()
@@ -45,6 +46,8 @@ class VerifyEmailOTPView(APIView):
         send_verification_email(subject = subject, email = user.email ,html_template = html_template )
         return Response({"message": "Email verified successfully."}, status=status.HTTP_200_OK)
     
+
+# sent otp for account verification by gmail
 class EmailVerifyResetOtp(APIView):
 
     def post(self, request):
@@ -74,7 +77,7 @@ class EmailVerifyResetOtp(APIView):
 
         return Response({"message": "OTP resent successfully."}, status=status.HTTP_200_OK)
 
-        
+# Sent Otp for reset password by gmail     
 class SendPasswordResetOTPView(APIView):
     def post(self, request):
         email = request.data.get('email')
@@ -103,12 +106,19 @@ class SendPasswordResetOTPView(APIView):
 
         return Response({"message": " Password Reset OTP successfully."}, status=status.HTTP_200_OK)
 
+# Verify OTP for Rest Password by Gmail 
 class ResetPasswordWithOTPView(APIView):
     def post(self, request):
         email = request.data.get("email")
         otp_code = request.data.get("otp")
         new_password = request.data.get("new_password")
         confirm_password = request.data.get("confirm_password")
+
+        if not otp_code:
+            return Response({"error": "OTP not found."}, status=status.HTTP_400_BAD_REQUEST)
+        
+        if not email:
+            return Response({"error": "Email is required."}, status=status.HTTP_400_BAD_REQUEST)
 
         if not new_password or not confirm_password:
             return Response( {"error": "Both new password and confirm password are required."},status=status.HTTP_400_BAD_REQUEST)
@@ -140,6 +150,11 @@ class ResetPasswordWithOTPView(APIView):
         user.save()
         otp.is_used = True
         otp.save()
+
+        subject = 'FeetF1rst Password Reset Confirmation!'
+        html_template = render_to_string('email/password_reset_done.html', {'user': user,'full_name': user.full_name})
+
+        send_verification_email(subject = subject, email = user.email ,html_template = html_template )
 
         return Response({"message": "Password reset successfully"})
 
