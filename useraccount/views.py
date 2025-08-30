@@ -126,7 +126,7 @@ class ResetPasswordWithOTPView(APIView):
                 {"error": list(e.messages)}, 
                 status=status.HTTP_400_BAD_REQUEST
             )
-
+        
 
         user = User.objects.filter(email=email, is_verified=True).first()
         if not user:
