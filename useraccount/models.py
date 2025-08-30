@@ -8,11 +8,17 @@ from django.conf import settings
 
 
 class UserManager(BaseUserManager):
-    def create_user(self, email, password=None, role='customer', **extra_fields):
+    def create_user(self, email, full_name, dob, password=None, role='customer', **extra_fields):
         if not email:
             raise ValueError('Users must have an email address')
         email = self.normalize_email(email)
-        user = self.model(email=email, role=role, **extra_fields)
+        user = self.model(
+            email=email,
+            full_name=full_name,
+            dob=dob,
+            role=role,
+            **extra_fields
+        )
         user.set_password(password)
         user.save(using=self._db)
         return user
@@ -22,7 +28,9 @@ class UserManager(BaseUserManager):
         extra_fields.setdefault('is_staff', True)
         extra_fields.setdefault('is_active', True)
         extra_fields.setdefault('is_superuser', True)
+
         return self.create_user(email, full_name, dob, password, **extra_fields)
+
 
 
 class User(AbstractBaseUser, PermissionsMixin):
