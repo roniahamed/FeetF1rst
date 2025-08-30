@@ -54,6 +54,7 @@ INSTALLED_APPS = [
     'allauth.account',
     'allauth.socialaccount',
     'rest_framework_simplejwt.token_blacklist',
+    'allauth.socialaccount.providers.google',
     
 
     #custom apps
@@ -158,6 +159,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTHENTICATION_BACKENDS = [
     "useraccount.auth_backends.CustomAuthBackend",  # custom backend
     "django.contrib.auth.backends.ModelBackend",  # fallback
+    ''
 ]
 
 
@@ -197,7 +199,7 @@ REST_AUTH_SERIALIZERS = {
 # Allauth settings
 SIGNUP_FIELDS = allauth_account_settings.SIGNUP_FIELDS
 SIGNUP_FIELDS['email']['required'] = True
-
+# SOCIALACCOUNT_AUTO_SIGNUP = False
 ACCOUNT_EMAIL_VERIFICATION = 'none'  
 
 ACCOUNT_USER_MODEL_USERNAME_FIELD = None

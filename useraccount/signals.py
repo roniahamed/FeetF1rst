@@ -18,4 +18,4 @@ def create_email_verification(sender, instance, created, *args, **kwargs):
 
         OTP.objects.create(user=instance, code=otp, purpose='email_verification')
 
-        send_verification_email(subject = subject, user=instance.email, html_template=html_message)
+        send_verification_email(subject = subject, email=instance.email, html_template=html_message)
