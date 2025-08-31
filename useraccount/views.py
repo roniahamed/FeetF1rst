@@ -8,7 +8,9 @@ from useraccount.utils.email import send_verification_email
 from django.db.models import Q
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError
-
+from allauth.socialaccount.providers.google.views import GoogleOAuth2Adapter
+from dj_rest_auth.registration.views import SocialLoginView
+from allauth.socialaccount.providers.oauth2.client import OAuth2Client
 
 # Verify otp for account by gmail
 class VerifyEmailOTPView(APIView):
@@ -158,3 +160,8 @@ class ResetPasswordWithOTPView(APIView):
 
         return Response({"message": "Password reset successfully"})
 
+
+class GoogleLogin(SocialLoginView):
+    adapter_class = GoogleOAuth2Adapter
+    # callback_url = 'http://localhost:8000/api/auth/social/google/callback/'
+    client_class = OAuth2Client

@@ -12,8 +12,6 @@ class ProfileSerializer(serializers.ModelSerializer):
         model = Profile
         fields = ('image', 'gender', 'mobile', 'language', 'address')
 
-
-
 class CustomUserDetailsSerializer(UserDetailsSerializer):
     class Meta(UserDetailsSerializer.Meta):
         model = User  # import your User model
@@ -54,3 +52,5 @@ class CustomRegisterSerializer(RegisterSerializer):
         user.is_active = False  # User must activate via email
         user.save()
         return user
+    
+

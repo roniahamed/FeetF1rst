@@ -27,7 +27,6 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = config('DJANGO_SECRET_KEY')
 
 
-
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config('DJANGO_DEBUG', default=False, cast=bool)
 
@@ -74,6 +73,9 @@ MIDDLEWARE = [
     'allauth.account.middleware.AccountMiddleware',  # <-- Add this line here
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
+    #Front-end
+    'corsheaders.middleware.CorsMiddleware',
 ]
 
 # allauth settings
@@ -159,13 +161,17 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTHENTICATION_BACKENDS = [
     "useraccount.auth_backends.CustomAuthBackend",  # custom backend
     "django.contrib.auth.backends.ModelBackend",  # fallback
-    ''
+    'allauth.account.auth_backends.AuthenticationBackend',
+
+    
 ]
 
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
+        'dj_rest_auth.jwt_auth.JWTCookieAuthentication',
+
     ),
 }
 
@@ -199,6 +205,20 @@ REST_AUTH_SERIALIZERS = {
 # Allauth settings
 SIGNUP_FIELDS = allauth_account_settings.SIGNUP_FIELDS
 SIGNUP_FIELDS['email']['required'] = True
+
+
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        'APP': {
+            'client_id':config('OAUTH2_CLIENT_ID'),
+            'secret':config('OAUTH2_CLIENT_SECRET'),
+            'key': ''
+        }
+    }
+}
+
+
+
 # SOCIALACCOUNT_AUTO_SIGNUP = False
 ACCOUNT_EMAIL_VERIFICATION = 'none'  
 
