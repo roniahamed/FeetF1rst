@@ -70,7 +70,7 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'allauth.account.middleware.AccountMiddleware',  # <-- Add this line here
+    # 'allauth.account.middleware.AccountMiddleware',  # 
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 
@@ -78,8 +78,9 @@ MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
 ]
 
-# allauth settings
+# Adaptor settings
 ACCOUNT_ADAPTER = 'useraccount.adapters.CustomAccountAdapter'
+SOCIALACCOUNT_ADAPTER = 'useraccount.adapters.CustomSocialAccountAdapter'
 
 
 ROOT_URLCONF = 'feetf1rst.urls'
@@ -202,29 +203,39 @@ REST_AUTH_SERIALIZERS = {
     'USER_DETAILS_SERIALIZER': 'useraccount.serializers.CustomUserDetailsSerializer',
 }
 
-# Allauth settings
-SIGNUP_FIELDS = allauth_account_settings.SIGNUP_FIELDS
-SIGNUP_FIELDS['email']['required'] = True
+# # # Allauth settings
+# SIGNUP_FIELDS = allauth_account_settings.SIGNUP_FIELDS
+# SIGNUP_FIELDS['email']['required'] = True
 
 
 SOCIALACCOUNT_PROVIDERS = {
     'google': {
-        'APP': {
-            'client_id':config('OAUTH2_CLIENT_ID'),
-            'secret':config('OAUTH2_CLIENT_SECRET'),
-            'key': ''
-        }
+        'SCOPE': [
+            'email',
+        ],
+        'AUTH_PARAMS': {
+            'access_type': 'offline', # Recommended to get a refresh token
+        },
+        'OAUTH_PKCE_ENABLED': True,
     }
 }
 
+# Authenticate if local account with this email address already exists
+SOCIALACCOUNT_EMAIL_AUTHENTICATION = True
+# Connect local account and social account if local account with that email address already exists
+SOCIALACCOUNT_EMAIL_AUTHENTICATION_AUTO_CONNECT = True
 
 
-# SOCIALACCOUNT_AUTO_SIGNUP = False
+SOCIALACCOUNT_AUTO_SIGNUP = True
+
 ACCOUNT_EMAIL_VERIFICATION = 'none'  
 
 ACCOUNT_USER_MODEL_USERNAME_FIELD = None
 ACCOUNT_LOGIN_METHODS ={'email'}
-ACCOUNT_SIGNUP_FIELDS = ['email*', 'password1*',  'full_name*', 'dob']
+ACCOUNT_SIGNUP_FIELDS = ['email*', 'password1*',  'full_name*']
+ACCOUNT_AUTHENTICATION_METHOD = 'email'
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_USERNAME_REQUIRED = False
 
 
 # Email backend configuration
@@ -235,3 +246,29 @@ EMAIL_USE_TLS = config('EMAIL_USE_TLS', default=True, cast=bool)
 EMAIL_HOST_USER = config('EMAIL_HOST_USER', default = '')
 EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
 DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL')
+
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
+]
+CORS_ALLOW_METHODS = [
+    "DELETE",
+    "GET",
+    "OPTIONS",
+    "PATCH",
+    "POST",
+    "PUT",
+]
+
+CORS_ALLOW_HEADERS = [
+    "accept",
+    "accept-encoding",
+    "authorization",
+    "content-type",
+    "dnt",
+    "origin",
+    "user-agent",
+    "x-csrftoken",
+    "x-requested-with",
+]

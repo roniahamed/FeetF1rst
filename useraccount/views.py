@@ -11,6 +11,9 @@ from django.core.exceptions import ValidationError
 from allauth.socialaccount.providers.google.views import GoogleOAuth2Adapter
 from dj_rest_auth.registration.views import SocialLoginView
 from allauth.socialaccount.providers.oauth2.client import OAuth2Client
+# from .serializers import CustomSocialLoginSerializer
+# from allauth.socialaccount.providers.google.views import GoogleOAuth2Adapter
+
 
 # Verify otp for account by gmail
 class VerifyEmailOTPView(APIView):
@@ -163,5 +166,7 @@ class ResetPasswordWithOTPView(APIView):
 
 class GoogleLogin(SocialLoginView):
     adapter_class = GoogleOAuth2Adapter
-    # callback_url = 'http://localhost:8000/api/auth/social/google/callback/'
     client_class = OAuth2Client
+    callback_url = "http://localhost:3000/Front-end/login.html"
+    # serializer_class = CustomSocialLoginSerializer
+

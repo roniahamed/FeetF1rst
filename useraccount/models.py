@@ -8,14 +8,13 @@ from django.conf import settings
 
 
 class UserManager(BaseUserManager):
-    def create_user(self, email, full_name, dob, password=None, role='customer', **extra_fields):
+    def create_user(self, email, full_name, dob = None, password=None, role='customer', **extra_fields):
         if not email:
             raise ValueError('Users must have an email address')
         email = self.normalize_email(email)
         user = self.model(
             email=email,
             full_name=full_name,
-            dob=dob,
             role=role,
             **extra_fields
         )
@@ -23,13 +22,13 @@ class UserManager(BaseUserManager):
         user.save(using=self._db)
         return user
 
-    def create_superuser(self, email, full_name, dob, password=None, **extra_fields):
+    def create_superuser(self, email, full_name, password=None, **extra_fields):
         extra_fields.setdefault('role', 'admin')
         extra_fields.setdefault('is_staff', True)
         extra_fields.setdefault('is_active', True)
         extra_fields.setdefault('is_superuser', True)
 
-        return self.create_user(email, full_name, dob, password, **extra_fields)
+        return self.create_user(email, full_name, password, **extra_fields)
 
 
 
@@ -50,7 +49,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     is_verified = models.BooleanField(default=False)
 
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['full_name', 'dob']
+    REQUIRED_FIELDS = ['full_name']
 
     objects = UserManager()
 

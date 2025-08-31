@@ -5,6 +5,7 @@ from rest_framework import serializers
 from .models import User, Profile, ProfileOnboard, Address
 from rest_framework.validators import UniqueValidator
 from allauth.account import app_settings as allauth_account_settings 
+from dj_rest_auth.registration.serializers import SocialLoginSerializer
 
 
 class ProfileSerializer(serializers.ModelSerializer):
@@ -53,4 +54,12 @@ class CustomRegisterSerializer(RegisterSerializer):
         user.save()
         return user
     
+# class CustomSocialLoginSerializer(SocialLoginSerializer):
+#     def validate(self, attrs):
+#         view = self.context.get('view')
+#         request = self.context.get('request')
+
+#         self.callback_url = getattr(view, 'callback_url', None)
+#         self.client_class = getattr(view, 'client_class', None)
+#         return super().validate(attrs)
 
