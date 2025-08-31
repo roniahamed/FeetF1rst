@@ -8,6 +8,6 @@ urlpatterns = [
     path('password-rest-otp/', SendPasswordResetOTPView.as_view(), name='password_rest_otp'),
     path('password-rest/', ResetPasswordWithOTPView.as_view(), name='password_reset' ),
     path('google/login/', GoogleLogin.as_view(), name='google_login'), 
-    path('accounts/', include('allauth.urls')),
+    
     
 ]

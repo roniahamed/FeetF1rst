@@ -2,6 +2,8 @@ from allauth.account.adapter import DefaultAccountAdapter
 from rest_framework import status
 from rest_framework.response import Response
 from allauth.socialaccount.adapter import DefaultSocialAccountAdapter
+from .models import User
+from allauth.exceptions import ImmediateHttpResponse
 
 
 class CustomAccountAdapter(DefaultAccountAdapter):
@@ -20,6 +22,24 @@ class CustomAccountAdapter(DefaultAccountAdapter):
         return Response({"detail": "User account is inactive."}, status=status.HTTP_403_FORBIDDEN)
     
 class CustomSocialAccountAdapter(DefaultSocialAccountAdapter):
+
+
+    def pre_social_login(self, request, sociallogin):
+        email = sociallogin.account.extra_data.get('email', '')
+
+        if email and User.objects.filter(email = email).exists():
+            user = User.objects.get(email = email)
+            if not user.is_active:
+                response_data = {
+                    "detail": "This user's account is inactive. Please contact support.",
+                    "code": "account_inactive"
+                }
+
+                raise ImmediateHttpResponse(Response(response_data,status=status.HTTP_403_FORBIDDEN))
+            
+            if not sociallogin.is_existing:
+                sociallogin.connect(request, user)
+
     def save_user(self, request, sociallogin, form=None):
 
         user = super().save_user(request, sociallogin, form)
@@ -27,3 +47,6 @@ class CustomSocialAccountAdapter(DefaultSocialAccountAdapter):
         user.is_verified = True
         user.save()
         return user
+    
+
+        
