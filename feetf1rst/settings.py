@@ -44,6 +44,10 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    # Cloudinary
+    'cloudinary_storage',
+    'cloudinary',
+
     #authentication 
     'rest_framework',
     'dj_rest_auth',
@@ -70,7 +74,7 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
-    # 'allauth.account.middleware.AccountMiddleware',  # 
+    'allauth.account.middleware.AccountMiddleware',  
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 
@@ -157,8 +161,8 @@ STATIC_URL = 'static/'
 
 # Media settings 
 
-MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / 'media'
+# MEDIA_URL = '/media/'
+# MEDIA_ROOT = BASE_DIR / 'media'
 
 
 # Default primary key field type
@@ -219,9 +223,11 @@ SOCIALACCOUNT_PROVIDERS = {
     'google': {
         'SCOPE': [
             'email',
+            'profile',
+            'https://www.googleapis.com/auth/user.birthday.read',
         ],
         'AUTH_PARAMS': {
-            'access_type': 'offline', # Recommended to get a refresh token
+            'access_type': 'offline',
         },
         'OAUTH_PKCE_ENABLED': True,
     }
@@ -279,3 +285,14 @@ CORS_ALLOW_HEADERS = [
     "x-csrftoken",
     "x-requested-with",
 ]
+
+
+# Cloudinary storage settings
+
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME' : config('CLOUDINARY_CLOUD_NAME'),
+    'API_KEY' : config('CLOUDINARY_API_KEY'),
+    'API_SECRET' : config('CLOUDINARY_API_SECRET')
+}
