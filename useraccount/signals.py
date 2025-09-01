@@ -43,5 +43,6 @@ def update_profile_from_social(sender, request, sociallogin, *args, **kwargs):
 
                         file_name = f"{user.id}_google_profile.jpg"
                         profile.image.save(file_name, ContentFile(response.content), save=True)
+
             except Exception as e:
                 pass
