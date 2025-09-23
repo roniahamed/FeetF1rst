@@ -167,6 +167,6 @@ class ResetPasswordWithOTPView(APIView):
 class GoogleLogin(SocialLoginView):
     adapter_class = GoogleOAuth2Adapter
     client_class = OAuth2Client
-    callback_url = "http://localhost:3000/Front-end/login.html"
+    callback_url = "http://localhost:3002/Front-end/login.html"
     # serializer_class = CustomSocialLoginSerializer
 

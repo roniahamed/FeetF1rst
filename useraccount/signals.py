@@ -33,16 +33,19 @@ def update_profile_from_social(sender, request, sociallogin, *args, **kwargs):
         picture_url = extra_data.get('picture', '')
 
         if picture_url:
+            print(picture_url)
             try: 
                 profile, created = Profile.objects.get_or_create(user = user)
 
-                if not profile.image:
-                    response = requests.get(picture_url)
+                print("Tanvir ")
 
-                    if response.status_code == 200:
+                # if not profile.image:
+                response = requests.get(picture_url)
 
-                        file_name = f"{user.id}_google_profile.jpg"
-                        profile.image.save(file_name, ContentFile(response.content), save=True)
+                if response.status_code == 200:
+
+                    file_name = f"{user.id}_google_profile.jpg"
+                    profile.image.save(file_name, ContentFile(response.content), save=True)
 
             except Exception as e:
                 pass

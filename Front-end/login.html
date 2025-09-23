@@ -156,9 +156,9 @@
     <script>
     document.addEventListener('DOMContentLoaded', () => {
         const GOOGLE_CLIENT_ID = "169753588996-suef3t6v35ol4o2tp6uq6dur3o0kevnp.apps.googleusercontent.com";
-        const FRONTEND_CALLBACK_URL = "http://localhost:3000/Front-end/login.html";
-        const BACKEND_API_URL = "http://127.0.0.1:8000/api/auth/google/login/";
-        const USER_PROFILE_API_URL = "http://127.0.0.1:8000/api/auth/user/";
+        const FRONTEND_CALLBACK_URL = "http://localhost:3002/Front-end/login.html";
+        const BACKEND_API_URL = "http://127.0.0.1:8002/api/auth/google/login/";
+        const USER_PROFILE_API_URL = "http://127.0.0.1:8002/api/auth/user/";
 
         const loginSection = document.getElementById('login-section');
         const userInfoSection = document.getElementById('user-info');
@@ -202,6 +202,8 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ code: code }),
                 });
+
+                console.log(response);
 
                 const data = await response.json();
                 if (!response.ok) {

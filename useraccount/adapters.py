@@ -45,8 +45,35 @@ class CustomSocialAccountAdapter(DefaultSocialAccountAdapter):
 
         user = super().save_user(request, sociallogin, form)
         extra_data = sociallogin.account.extra_data 
+        import json
+        print(json.dumps(extra_data, indent=2))
 
         user.full_name = extra_data.get('name', '')
+
+        # if 'birthdays' in extra_data and extra_data['birthdays']:
+        #     print("have birthday date")
+
+        #     birthday_data = extra_data['birthdays'][0].get('date')
+        #     if birthday_data and 'year' in birthday_data and 'month' in birthday_data and 'day' in birthday_data:
+        #         from datetime import date
+        #         user.dob = date(
+        #         year=birthday_data['year'],
+        #         month=birthday_data['month'],
+        #         day=birthday_data['day']
+        #     )
+
+        # if 'birthday' in extra_data and extra_data['birthday']:
+        #     print("have birthday date")
+
+        #     birthday_data = extra_data['birthday'][0].get('date')
+        #     if birthday_data and 'year' in birthday_data and 'month' in birthday_data and 'day' in birthday_data:
+        #         from datetime import date
+        #         user.dob = date(
+        #         year=birthday_data['year'],
+        #         month=birthday_data['month'],
+        #         day=birthday_data['day']
+        #     )
+        # print("not found
         
         user.is_verified = True
         user.save()
